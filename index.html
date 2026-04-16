@@ -127,7 +127,7 @@
       </div>
 
       <!-- deco corners -->
-      <div class="board-deco-tl">📌</div>
+      <!-- <div class="board-deco-tl">📌</div> -->
       <div class="board-deco-tr">
         <svg width="40" height="40" viewBox="0 0 40 40">
           <path d="M20,2 L23,14 L36,14 L26,22 L30,34 L20,26 L10,34 L14,22 L4,14 L17,14Z" fill="#f0c030" stroke="#c89010"
@@ -149,14 +149,8 @@
 
     <!-- board content -->
     <div class="classview-board">
-      <!-- board decorations -->
-      <div class="bd-star1 deco">⭐</div>
-      <div class="bd-excl deco" style="top:40px;left:14px;font-size:32px">❕</div>
-      <div class="bd-curl deco">🌀</div>
-      <div class="bd-star2 deco">✨</div>
-      <div class="bd-ribbon deco">🎀</div>
-
       <!-- photo grid -->
+      <div id="stickerContainer"></div>
       <div class="photo-grid" id="photoGrid"></div>
     </div>
   </div>
@@ -169,11 +163,14 @@
       <button class="lb-download" title="Tải ảnh" onclick="downloadPhoto()">⬇</button>
       <button class="lb-close" onclick="closeLightbox()">✕</button>
       <div class="lb-photo" id="lb-photo"></div>
+      <div class="lb-name" id="lb-name"></div>
+      <div class="lb-counter" id="lb-counter"></div>
     </div>
     <button class="lb-btn lb-prev" onclick="lbMove(-1)">‹</button>
     <button class="lb-btn lb-next" onclick="lbMove(1)">›</button>
   </div>
 
+  <script src="js/data.js"></script>
   <script src="js/script.js"></script>
 </body>
 

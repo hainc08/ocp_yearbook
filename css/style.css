@@ -462,7 +462,7 @@ body {
   animation: fadeIn .5s ease;
   display: flex;
   flex-direction: column;
-  padding: 40px;
+  padding: 50px;
   margin: auto;
 }
 
@@ -685,14 +685,22 @@ body {
   width: 100%;
   aspect-ratio: 3/4;
   background: linear-gradient(160deg, #bde0f8 0%, #8ec8f0 30%, #6db89a 65%, #4a9e6e 100%);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
   overflow: hidden;
   position: relative;
 }
 
-/* cloud */
+/* thumbnail image */
+.photo-placeholder img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 2;
+}
+
+/* cloud placeholder (shown when no image) */
 .photo-placeholder::after {
   content: '';
   position: absolute;
@@ -705,70 +713,81 @@ body {
   border-radius: 50px;
   box-shadow: -20px 8px 0 10px white, 22px 5px 0 8px white;
   opacity: 0.9;
+  z-index: 1;
 }
 
 .student-name {
   background: linear-gradient(180deg, #f5edd6, #e8dcb4);
   border: 1.5px solid #b09050;
   border-radius: 20px;
-  padding: 5px 14px;
+  padding: 6px 14px;
   margin-top: 8px;
   font-family: 'Caveat', cursive;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--brown-dark);
   text-align: center;
   box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.15);
   width: 90%;
   cursor: pointer;
   transition: background .15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .student-name:hover {
   background: linear-gradient(180deg, #ffe090, #f0c840);
 }
 
-/* board decorations */
-.bd-star1 {
+/* board decorations (dynamic stickers) */
+.board-sticker {
   position: absolute;
-  top: 40px;
-  left: 20px;
-  font-size: 36px;
-  opacity: .7;
-  animation: float 3s ease-in-out infinite;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(4px 6px 12px rgba(0, 0, 0, 0.3));
+  transition: all 0.5s ease;
 }
 
-.bd-star2 {
-  position: absolute;
-  bottom: 60px;
-  right: 20px;
-  font-size: 44px;
-  opacity: .8;
-  animation: float 2.5s ease-in-out infinite .5s;
+.board-sticker img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.bd-excl {
-  position: absolute;
-  top: 60px;
-  left: 10px;
-  font-size: 40px;
+/* Washi tape effect on polaroids */
+.photo-card {
+  position: relative;
 }
 
-.bd-curl {
+.polaroid-tape {
   position: absolute;
-  bottom: 100px;
-  left: 8px;
-  font-size: 36px;
-  opacity: .7;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(2deg);
+  width: 70px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(1px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 5;
+  pointer-events: none;
 }
 
-.bd-ribbon {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  font-size: 32px;
-  opacity: .6;
+/* varied tape rotations */
+.photo-card:nth-child(3n) .polaroid-tape {
+  transform: translateX(-50%) rotate(-3deg);
 }
+
+.photo-card:nth-child(3n+1) .polaroid-tape {
+  transform: translateX(-50%) rotate(4deg);
+}
+
+.photo-card:nth-child(3n+2) .polaroid-tape {
+  transform: translateX(-50%) rotate(-1deg);
+}
+
 
 /* ── LIGHTBOX ── */
 #lightbox {
@@ -798,14 +817,24 @@ body {
 
 .lb-photo {
   width: 100%;
-  aspect-ratio: 3/4;
-  background: linear-gradient(160deg, #bde0f8 0%, #8ec8f0 30%, #6db89a 65%, #4a9e6e 100%);
+  background: #111;
   border-radius: 4px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
   overflow: hidden;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.lb-photo img {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+  position: relative;
+  z-index: 5;
 }
 
 .lb-photo::after {
@@ -820,6 +849,25 @@ body {
   border-radius: 50px;
   box-shadow: -20px 8px 0 10px white, 22px 5px 0 8px white;
   opacity: 0.9;
+  z-index: 1;
+}
+
+.lb-name {
+  margin-top: 12px;
+  font-family: 'Caveat', cursive;
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.lb-counter {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: #ccc;
+  text-align: center;
+  margin-top: 4px;
 }
 
 .lb-btn {
@@ -845,11 +893,11 @@ body {
 }
 
 .lb-prev {
-  left: -52px;
+  left: 20px;
 }
 
 .lb-next {
-  right: -52px;
+  right: 20px;
 }
 
 .lb-close {
@@ -935,10 +983,10 @@ body {
   }
 
   .lb-prev {
-    left: -40px;
+    left: 10px;
   }
 
   .lb-next {
-    right: -40px;
+    right: 10px;
   }
 }
