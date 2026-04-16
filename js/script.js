@@ -121,19 +121,24 @@ function buildPhotoGrid() {
   displayList.forEach((originalName) => {
     const photos = classData[originalName] || [];
     const displayName = cleanStudentName(originalName);
-    const coverPhoto = photos.length > 0 ? photos[0] : '';
+    // Get thumbnail of first photo
+    const firstPhoto = photos.length > 0 ? photos[0] : null;
+    const thumbSrc = firstPhoto ? (firstPhoto.thumb || firstPhoto) : '';
 
     const card = document.createElement('div');
     card.className = 'photo-card';
 
+    // Escape name for use in onclick attribute (avoid quote injection)
+    const escapedName = originalName.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
     card.innerHTML = `
       <div class="polaroid-tape"></div>
-      <div class="polaroid" onclick="openLightboxForStudent('${originalName}')">
+      <div class="polaroid" onclick="openLightboxForStudent('${escapedName}')">
         <div class="photo-placeholder">
-          ${coverPhoto ? `<img src="${coverPhoto}" onerror="this.style.display='none'" alt="">` : ''}
+          ${thumbSrc ? `<img src="${thumbSrc}" loading="lazy" onerror="this.style.display='none'" alt="" crossorigin="anonymous">` : ''}
         </div>
       </div>
-      <div class="student-name" onclick="openLightboxForStudent('${originalName}')">${displayName}</div>`;
+      <div class="student-name" onclick="openLightboxForStudent('${escapedName}')">${displayName}</div>`;
     grid.appendChild(card);
   });
 }
@@ -165,27 +170,33 @@ function lbMove(dir) {
 }
 
 function renderLbPhoto() {
-  const imgPath = activeAlbum[lbIndex];
+  const photoObj = activeAlbum[lbIndex];
+  // Support both {thumb, view} objects and plain string URLs (legacy)
+  const viewSrc  = (typeof photoObj === 'object') ? photoObj.view  : photoObj;
+  const thumbSrc = (typeof photoObj === 'object') ? photoObj.thumb : photoObj;
 
-  const lbPhoto = document.getElementById('lb-photo');
-  const lbName = document.getElementById('lb-name');
+  const lbPhoto   = document.getElementById('lb-photo');
+  const lbName    = document.getElementById('lb-name');
   const lbCounter = document.getElementById('lb-counter');
 
-  lbName.textContent = currentStudentName;
+  lbName.textContent    = currentStudentName;
   lbCounter.textContent = `Ảnh ${lbIndex + 1} / ${activeAlbum.length}`;
-  lbPhoto.innerHTML = `<img src="${imgPath}" onerror="this.style.opacity='0'" alt="${currentStudentName}">`;
+  lbPhoto.innerHTML     = `<img src="${viewSrc}" onerror="this.style.opacity='0'" alt="${currentStudentName}">`;
 
-  // Pre-load next
+  // Pre-load next image
   if (activeAlbum.length > 1) {
-    const nextIdx = (lbIndex + 1) % activeAlbum.length;
-    new Image().src = activeAlbum[nextIdx];
+    const nextObj = activeAlbum[(lbIndex + 1) % activeAlbum.length];
+    new Image().src = (typeof nextObj === 'object') ? nextObj.thumb : nextObj;
   }
 }
 
 function downloadPhoto() {
-  const imgPath = activeAlbum[lbIndex];
+  const photoObj = activeAlbum[lbIndex];
+  // Use view URL for download (full resolution)
+  const viewSrc = (typeof photoObj === 'object') ? photoObj.view : photoObj;
   const link = document.createElement('a');
-  link.href = imgPath;
+  link.href = viewSrc;
+  link.target = '_blank'; // Open in new tab if download is blocked (Drive restriction)
   link.download = `${currentStudentName}_${lbIndex + 1}.jpg`;
   document.body.appendChild(link);
   link.click();
