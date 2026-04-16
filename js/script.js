@@ -1,16 +1,7 @@
 // ─── Data ───────────────────────────────────────────────────────
 const CLASSES = ['9A1','9A2','9A3','9A4','9A5','9A6','9A7','9A8','9B1'];
-const STAR_COLORS = [
-  { fill: '#e8a0b0', stroke: '#c07080', outline: '#f0d0d8', style: 'solid' },
-  { fill: '#5060c0', stroke: '#304090', outline: '#9090e0', style: 'solid' },
-  { fill: '#d040a0', stroke: '#a02080', outline: '#f080d0', style: 'solid' },
-  { fill: 'none',    stroke: '#40c0b0', outline: '#40c0b0', style: 'outline' },
-  { fill: '#c08878', stroke: '#906858', outline: '#e0b0a0', style: 'solid' },
-  { fill: 'none',    stroke: '#60c890', outline: '#60c890', style: 'outline2' },
-  { fill: '#d04060', stroke: '#a02040', outline: '#f08090', style: 'dotted' },
-  { fill: 'none',    stroke: '#6070a0', outline: '#6070a0', style: 'outline' },
-  { fill: '#e8e0c0', stroke: '#c0b090', outline: '#f8f0e0', style: 'sketch' },
-];
+const STAR_FILES = ['star2.png', 'star3.png', 'star4.png', 'star5.png', 'star6.png', 'star7.png', 'star8.png', 'star9.png'];
+
 
 const STUDENTS = [
   'Nguyễn Văn A','Trần Thị B','Lê Văn C','Phạm Thị D','Hoàng Văn E',
@@ -42,18 +33,7 @@ function goClassView(cls) {
 }
 
 // ─── Build class picker ──────────────────────────────────────────
-function starSVG(c, size=90) {
-  const pts = '50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35';
-  let fill = c.fill;
-  let sw = 2.5;
-  let dash = '';
-  if (c.style === 'dotted') { fill = 'none'; dash = '4,3'; }
-  if (c.style === 'outline2') { sw = 3; }
-  return `<svg width="${size}" height="${size}" viewBox="0 0 100 95">
-    <polygon points="${pts}" fill="${fill}" stroke="${c.stroke}" stroke-width="${sw}" stroke-dasharray="${dash}"/>
-    ${c.style==='sketch' ? `<polygon points="${pts}" fill="none" stroke="${c.stroke}" stroke-width="1.5" transform="translate(2,-2) rotate(3,50,47)"/>` : ''}
-  </svg>`;
-}
+
 
 function buildClasses() {
   const grid = document.getElementById('classGrid');
@@ -77,11 +57,11 @@ function buildClasses() {
 }
 
 function makeClassItem(cls, i) {
-  const c = STAR_COLORS[i % STAR_COLORS.length];
+  const randomStar = STAR_FILES[Math.floor(Math.random() * STAR_FILES.length)];
   const div = document.createElement('div');
   div.className = 'class-item';
   div.style.setProperty('--i', i);
-  div.innerHTML = starSVG(c, 88) + `<div class="class-pill">${cls}</div>`;
+  div.innerHTML = `<img src="images/${randomStar}" class="star-sticker" alt="Star">` + `<div class="class-pill">${cls}</div>`;
   div.onclick = () => goClassView(cls);
   return div;
 }
